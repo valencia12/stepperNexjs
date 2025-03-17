@@ -1,16 +1,14 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { FormStep1Data, FormStep2Data, FormStep3Data } from "@/types/FormTypes";
+import { DynamicFormData } from "@/types/FormTypes";
 
 interface StepperContextType {
     currentStep: number;
     nextStep: () => void;
     prevStep: () => void;
-    saveData: (step: number, data: FormStep1Data | FormStep2Data | FormStep3Data) => void;
-    formData: {
-        [key: string]: FormStep1Data | FormStep2Data | FormStep3Data;
-    };
+    saveData: (step: number, data: DynamicFormData) => void;
+    formData: { [key: string]: DynamicFormData };
     isStepCompleted: boolean[];
     markStepCompleted: (step: number) => void;
     loading: boolean;
@@ -29,19 +27,11 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
         return 0;
     });
 
-    const [formData, setFormData] = useState(() => {
+    const [formData, setFormData] = useState<{ [key: string]: DynamicFormData }>(() => {
         if (typeof window !== "undefined") {
-            return JSON.parse(localStorage.getItem("formData") || JSON.stringify({
-                step1: { nombre: "", switchState: false },
-                step2: { email: "", switchState: false },
-                step3: { telefono: "", switchState: false },
-            }));
+            return JSON.parse(localStorage.getItem("formData") || JSON.stringify({}));
         }
-        return {
-            step1: { nombre: "", switchState: false },
-            step2: { email: "", switchState: false },
-            step3: { telefono: "", switchState: false },
-        };
+        return {};
     });
 
     const [isStepCompleted, setIsStepCompleted] = useState<boolean[]>(() => {
@@ -51,29 +41,16 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
         return [false, false, false];
     });
 
-    const [loading, setLoading] = useState<boolean>(() => {
-        if (typeof window !== "undefined") {
-            return JSON.parse(localStorage.getItem("loading") || "false");
-        }
-        return false;
-    });
-
-    const [errorMessage, setErrorMessage] = useState<string | null>(() => {
-        if (typeof window !== "undefined") {
-            return JSON.parse(localStorage.getItem("errorMessage") || "null");
-        }
-        return null;
-    });
+    const [loading, setLoading] = useState<boolean>(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         if (typeof window !== "undefined") {
             localStorage.setItem("currentStep", JSON.stringify(currentStep));
             localStorage.setItem("formData", JSON.stringify(formData));
             localStorage.setItem("isStepCompleted", JSON.stringify(isStepCompleted));
-            localStorage.setItem("loading", JSON.stringify(loading));
-            localStorage.setItem("errorMessage", JSON.stringify(errorMessage));
         }
-    }, [currentStep, formData, isStepCompleted, loading, errorMessage]);
+    }, [currentStep, formData, isStepCompleted]);
 
     const nextStep = () => {
         setCurrentStep((prev) => (prev < 2 ? prev + 1 : prev));
@@ -83,8 +60,8 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
         setCurrentStep((prev) => (prev > 0 ? prev - 1 : prev));
     };
 
-    const saveData = (step: number, data: FormStep1Data | FormStep2Data | FormStep3Data) => {
-        setFormData((prev: any) => {
+    const saveData = (step: number, data: DynamicFormData) => {
+        setFormData((prev) => {
             const newData = { ...prev, [`step${step + 1}`]: data };
             localStorage.setItem("formData", JSON.stringify(newData));
             return newData;
@@ -95,15 +72,12 @@ export function StepperProvider({ children }: { children: React.ReactNode }) {
         setIsStepCompleted((prev) => {
             const newStatus = [...prev];
             newStatus[step] = true;
-            localStorage.setItem("isStepCompleted", JSON.stringify(newStatus));
             return newStatus;
         });
     };
 
     return (
-        <StepperContext.Provider
-            value={{ currentStep, nextStep, prevStep, saveData, formData, isStepCompleted, markStepCompleted, loading, setLoading, errorMessage, setErrorMessage }}
-        >
+        <StepperContext.Provider value={{ currentStep, nextStep, prevStep, saveData, formData, isStepCompleted, markStepCompleted, loading, setLoading, errorMessage, setErrorMessage }}>
             {children}
         </StepperContext.Provider>
     );

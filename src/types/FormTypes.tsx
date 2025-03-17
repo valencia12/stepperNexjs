@@ -12,3 +12,4 @@ export interface FormStep3Data {
     telefono: string;
     switchState: boolean;
 }
+export type DynamicFormData = Record<string, any>;
