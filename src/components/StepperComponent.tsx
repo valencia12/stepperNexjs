@@ -4,7 +4,7 @@ import { useStepper } from "@/context/StepperContext";
 import { Box, Button, Step, StepIndicator, StepSeparator, StepStatus, StepTitle, StepDescription, Stepper, Text, Spinner } from "@chakra-ui/react";
 import { fakeApiRequest } from "@/utils/api";
 import { useState } from "react";
-import FormStep from "@/components/forms/FormStep/FormStep"; // Importamos el formulario dinámico
+import FormStep from "@/components/forms/FormStep/FormStep"; 
 
 const formsConfig = [
   {
@@ -20,6 +20,14 @@ const formsConfig = [
         } 
       },
       { name: "recibirNoticias", label: "¿Deseas recibir noticias?", type: "switch" },
+      {
+        name: "pais",
+        label: "País",
+        type: "combo",
+        searchable: true, 
+        options: ["Panamá", "Costa Rica", "México"],
+        validation: { required: "El país es obligatorio" }
+      }
     ],
   },
   {
@@ -82,7 +90,7 @@ export default function StepperComponent() {
   };
 
   const formKey = `step${currentStep + 1}` as keyof typeof formData;
-  const { fields } = formsConfig[currentStep]; // Extraemos los campos dinámicamente
+  const { fields } = formsConfig[currentStep]; 
 
   return (
     <Box width="500px" mx="auto" mt={10}>
