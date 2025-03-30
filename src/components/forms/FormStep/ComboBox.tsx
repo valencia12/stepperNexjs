@@ -49,11 +49,27 @@ export const ComboBox = ({
 
     return (
         <FormControl isInvalid={!!error} mb={4}>
-            <FormLabel htmlFor={name}>{label}</FormLabel>
+            <FormLabel htmlFor={name} fontWeight="bold" _after={{ content: "' *'", color: "red.500" }}>
+                {label}
+            </FormLabel>
 
             <Menu isLazy matchWidth autoSelect={false}>
-                <MenuButton as={Button} rightIcon={<ChevronDownIcon />} w="100%" textAlign="left">
-                    {selectedLabel || "Seleccione una opción"}
+                <MenuButton
+                    as={Button}
+                    rightIcon={<ChevronDownIcon />}
+                    w="100%"
+                    textAlign="left"
+                    variant="outline"
+                    bg="white"
+                    color={selectedLabel ? "gray.800" : "gray.400"}
+                    borderColor="#e2e8f0"
+                    height="44px"
+                    fontSize="sm"
+                    _placeholder={{ color: "gray.400" }}
+                    _hover={{ borderColor: "blue.300" }}
+                    _focus={{ boxShadow: "0 0 0 1px #3182ce" }}
+                >
+                    {selectedLabel || "Escoja una opción"}
                 </MenuButton>
                 <MenuList maxHeight="250px" overflowY="auto" px={2}>
                     <Input
@@ -63,6 +79,9 @@ export const ComboBox = ({
                         mb={2}
                         size="sm"
                         variant="filled"
+                        bg="gray.50"
+                        borderRadius="md"
+                        _focus={{ bg: "white", borderColor: "blue.300" }}
                     />
                     {filteredOptions.length > 0 ? (
                         filteredOptions.map((option, idx) => (
