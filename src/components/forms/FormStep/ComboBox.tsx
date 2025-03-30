@@ -72,17 +72,20 @@ export const ComboBox = ({
                     {selectedLabel || "Escoja una opción"}
                 </MenuButton>
                 <MenuList maxHeight="250px" overflowY="auto" px={2}>
-                    <Input
-                        placeholder="Buscar..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        mb={2}
-                        size="sm"
-                        variant="filled"
-                        bg="gray.50"
-                        borderRadius="md"
-                        _focus={{ bg: "white", borderColor: "blue.300" }}
-                    />
+                    {true &&
+                        <Input
+                            placeholder="Buscar..."
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            mb={2}
+                            size="sm"
+                            variant="filled"
+                            bg="gray.50"
+                            borderRadius="md"
+                            _focus={{ bg: "white", borderColor: "blue.300" }}
+                        />
+                    }
+
                     {filteredOptions.length > 0 ? (
                         filteredOptions.map((option, idx) => (
                             <MenuItem key={idx} onClick={() => handleSelect(option)}>
